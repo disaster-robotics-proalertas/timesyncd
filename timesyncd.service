@@ -3,10 +3,11 @@ Description=Time synchronization daemon
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/timesyncd \
-            /etc/timesyncd/timesyncd.conf
 User=root
+ExecStart=/usr/bin/timesyncd /etc/timesyncd/timesyncd.conf
 ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=60s
 
 [Install]
 WantedBy=multi-user.target
