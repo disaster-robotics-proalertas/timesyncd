@@ -35,7 +35,7 @@ add_subdirectory (src)
 set (TIMESYNCD_CONF_DIR "/etc/timesyncd")
 
 # Directory with systemd unit files
-set (SYSTEMD_UNIT_DIR "/usr/lib/systemd/system")
+set (SYSTEMD_UNIT_DIR "/etc/systemd/system")
 
 # Macro for installing configuration files
 function(install_conf src dest)
