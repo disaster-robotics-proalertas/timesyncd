@@ -1,0 +1,12 @@
+[Unit]
+Description=Time synchronization daemon
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/timesyncd \
+            /etc/timesyncd/timesyncd.conf
+User=root
+ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target
