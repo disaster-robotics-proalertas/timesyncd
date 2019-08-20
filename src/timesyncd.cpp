@@ -98,8 +98,8 @@ void timesync_server_daemon(){
         }
         
         // Try to get GPS time for 10 seconds
-        int timeout = 0;
-        while (timeout < int(10/0.5)){
+        int wait_cnt = 0;
+        while (wait_cnt < timeout){
             if (gps.decodeSingleMessage(Ublox::NAV_TIMEGPS, gpsdata) == 1)
             {
                 // NAV-TIMEGPS messages arrive as (gpsdata[0..3]):
@@ -130,8 +130,8 @@ void timesync_server_daemon(){
 
                 break;
             }
-            usleep(500000); // Sleep for 500 ms
-            timeout++;
+            sleep(1); // Sleep for 1 s
+            wait_cnt++;
         }
         // If unsuccessful for whatever reason, don't update the system time according to GPS
         if (timeout >= int(10/0.5))
