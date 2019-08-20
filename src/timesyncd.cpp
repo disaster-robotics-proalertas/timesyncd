@@ -232,8 +232,6 @@ void timesync_client_daemon(){
 
     // Request time from server
     syslog(LOG_INFO, "Connected, requesting time from server");
-    char out[] = "Give me the time!";
-    send(sockfd, out, strlen(out), 0);
 
     // Wait for an answer
     char buffer[1024] = {0};
