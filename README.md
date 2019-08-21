@@ -16,14 +16,14 @@ In _client_ mode, the daemon attempts to connect to the server directly through 
 
 The operating mode, master hostname, TCP port and timeout values can be changed in the [configuration file](https://github.com/disaster-robotics-proalertas/timesyncd/blob/master/timesyncd.conf).
 
-Although the daemon should work on any platform meeting the dependencies (assuming also proper daemon configuration), please be advised that *we have tested the program only on our setup, and thus we can not guarantee it will work on yours*.
+Although the daemon should work on any platform meeting the dependencies (assuming also proper daemon configuration), please be advised that **we have tested the program only on our setup, and thus we can not guarantee it will work on yours**.
 
 ## Dependencies
 
 * gcc (tested on version 5.4.0)
 * make (tested on version 4.1)
 * cmake (tested on version 3.5.1)
-* systemd (or equivalent)
+* systemd, or equivalent
 
 ## Installation
 
@@ -66,7 +66,7 @@ sudo make install
 
 ## Usage
 
-After adjusting the [configuration file](https://github.com/disaster-robotics-proalertas/timesyncd/blob/master/timesyncd.conf) to reflect your setup, you can run the daemon with _systemd_:
+After adjusting the [configuration file](https://github.com/disaster-robotics-proalertas/timesyncd/blob/master/timesyncd.conf) (see below) to reflect your setup, you can run the daemon with _systemd_:
 
 ```
 sudo systemctl start timesyncd.service
@@ -91,6 +91,15 @@ OR
 
 sudo service timesyncd status
 ```
+
+## [Configuration file](https://github.com/disaster-robotics-proalertas/timesyncd/blob/master/timesyncd.conf) parameters
+
+If the daemon is installed using "sudo make install" as described above, the configuration file's path will be "/etc/timesyncd/timesyncd.conf". Use a text editor (e.g., gedit, vi, nano...) to change the parameters stated below.
+
+* MODE: Selects server or client mode. Any other setting will result in a failed state.
+* MASTER_HOSTNAME: Parameter for client, indicates the hostname (in your /etc/hosts) for the computer running the server/master daemon. _Not used in server mode_.
+* PORT: Indicates the TCP port to be used. Change this to an available port on your device. Default is 12321, a random palindrome port.
+* TIMEOUT: In server mode, indicates the time the server will wait for a GPS reference time (GPST). In client mode, indicates the total time the client will attempt to connect with the server before exiting.
 
 ## Acknowledgements
 
