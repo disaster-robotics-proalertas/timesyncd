@@ -116,7 +116,7 @@ void timesync_server_daemon(){
     if(gps.testConnection())
     {
         syslog(LOG_INFO, "Ublox GPS test: OK\n");
-        if (!gps.configureSolutionRate(1000))
+        if (!gps.configureSolutionRate(5000))
         {
             syslog(LOG_WARNING, "Setting new rate: FAILED\n");
         }
