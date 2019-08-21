@@ -228,6 +228,21 @@ int UBXParser::decodeMessage(std::vector<double>& data)
 
                 break;
 
+        case 288:
+                // ID for Nav-TIMEGPS messages is 0x0120 == 288
+                // This message contains information on time reference. Here we are interested in iTOW (offset 0), fTOW (offset 1), week number (offset 8)
+                // and leap seconds (offset 10).
+                data.clear();
+                // iTOW
+                data.push_back (*(message+pos));
+                // fTOW
+                data.push_back (*(message+pos+4));
+                // Week
+                data.push_back (*(message+pos+8));
+                // Leap seconds
+                data.push_back (*(message+pos+10));
+                break;
+
         default:
                 // In case we don't want to decode the received message
                 flag = 0;
