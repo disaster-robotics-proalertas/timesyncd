@@ -230,17 +230,19 @@ int UBXParser::decodeMessage(std::vector<double>& data)
 
         case 288:
                 // ID for Nav-TIMEGPS messages is 0x0120 == 288
-                // This message contains information on time reference. Here we are interested in iTOW (offset 0), fTOW (offset 1), week number (offset 8)
-                // and leap seconds (offset 10).
+                // The message starts with an offset of 10: first 6 bytes of the captured
+                // message contain message header, id, payload length
+                // This message contains information on time reference. Here we are interested in iTOW (offset 6), fTOW (offset 10), week number (offset 14)
+                // and leap seconds (offset 16).
                 data.clear();
-                // iTOW
-                data.push_back (*(message+pos));
-                // fTOW
-                data.push_back (*(message+pos+4));
+                //iTOW
+                data.push_back ((unsigned)((*(message+pos+9) << 24) | (*(message+pos+8) << 16) | (*(message+pos+7) << 8) | (*(message+pos+6))));
+                //fTOW
+                data.push_back ((*(message+pos+13) << 24) | (*(message+pos+12) << 16) | (*(message+pos+11) << 8) | (*(message+pos+10)));
                 // Week
-                data.push_back (*(message+pos+8));
+                data.push_back (*(message+pos+6+8));    // 6 header bytes + 8 offset
                 // Leap seconds
-                data.push_back (*(message+pos+10));
+                data.push_back (*(message+pos+6+10));   // 6 header bytes + 10 offset
                 break;
 
         default:
@@ -314,6 +316,15 @@ int Ublox::enableNAV_STATUS()
     return SPIdev::transfer(spi_device_name.c_str(), gps_nav_status, from_gps_data_nav, gps_nav_status_length, 200000);
 }
 
+int Ublox::enableNAV_TIMEGPS()
+{
+    unsigned char gps_nav_timegps[] = {0xb5, 0x62, 0x06, 0x01, 0x03, 0x00, 0x01, 0x20, 0x01, 0x2C, 0x83};
+    int gps_nav_timegps_length = (sizeof(gps_nav_timegps)/sizeof(*gps_nav_timegps));
+    unsigned char from_gps_data_nav[gps_nav_timegps_length];
+
+    return SPIdev::transfer(spi_device_name.c_str(), gps_nav_timegps, from_gps_data_nav, gps_nav_timegps_length, 200000);
+}
+
 int Ublox::testConnection()
 {
     int status;
@@ -328,6 +339,11 @@ int Ublox::testConnection()
     }
 
     if (enableNAV_STATUS()<0)
+    {
+        std::cerr << "Could not configure ublox over SPI\n";
+    }
+
+    if (enableNAV_TIMEGPS()<0)
     {
         std::cerr << "Could not configure ublox over SPI\n";
     }
@@ -426,7 +442,12 @@ int Ublox::decodeMessages()
     {
         std::cerr << "Could not configure ublox over SPI\n";
     }
-
+    
+    if (enableNAV_TIMEGPS()<0)
+    {
+        std::cerr << "Could not configure ublox over SPI\n";
+    }
+    
     while (true)
     {
         // From now on, we will send zeroes to the receiver, which it will ignore

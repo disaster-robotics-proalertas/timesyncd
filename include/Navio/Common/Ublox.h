@@ -142,6 +142,7 @@ public:
     Ublox(std::string name, UBXScanner* scan, UBXParser* pars);
     int enableNAV_POSLLH();
     int enableNAV_STATUS();
+    int enableNAV_TIMEGPS();
     int testConnection();
     int configureSolutionRate(std::uint16_t meas_rate,
                               std::uint16_t nav_rate = 1,
