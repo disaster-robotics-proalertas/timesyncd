@@ -123,7 +123,7 @@ void timesync_server_daemon(){
         
         // Try to get GPS time for 10 seconds
         int wait_cnt = 0;
-        while (wait_cnt < timeout){
+        while (wait_cnt <= timeout){
             if (gps.decodeSingleMessage(Ublox::NAV_TIMEGPS, gpsdata) == 1)
             {
                 // NAV-TIMEGPS messages arrive as (gpsdata[0..3]):
@@ -135,8 +135,9 @@ void timesync_server_daemon(){
                 // Convert from GPS time to unix UTC since epoch
                 // time of week = GPS Milliseconds of week + nanoseconds of week + leap seconds
                 // Time since epoch = time of week + (week number * 7 * 24 * 3600)[week offset]
-                double timeofweek = gpsdata[0]/1000.0 + gpsdata[1]/10000000.0 + gpsdata[3];
-                time_t utcepoch = long(timeofweek + (gpsdata[2] * 7 * 24 * 3600));
+                double timeofweek = gpsdata[0]/1000.0 + gpsdata[1]/1000000000.0 + (int)gpsdata[3];
+                int weeknumber = (int)gpsdata[2] + 2048; // 2 * 1024 = 2048 -> Two rollovers since Aug. 1999, another rollover in approx. 20 years
+                time_t utcepoch = (long)(timeofweek + (int)gpsdata[3] + (weeknumber*7*24*3600)); 
                 utcepoch += 315964800;  // Offset for GPS time, as it started in Jan. 6, 1980 (UTC is Jan 1, 1970)
 
                 syslog(LOG_INFO, "Obtained GPS epoch: %ld", utcepoch);
@@ -158,7 +159,7 @@ void timesync_server_daemon(){
             wait_cnt++;
         }
         // If unsuccessful for whatever reason, don't update the system time according to GPS
-        if (timeout >= int(10/0.5))
+        if (wait_cnt > timeout)
             syslog(LOG_WARNING, "Could not set time according to GPS");
     } else {
         syslog(LOG_WARNING, "Could not connect to GPS");
