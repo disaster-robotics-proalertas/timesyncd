@@ -136,7 +136,8 @@ void timesync_server_daemon(){
                 // time of week = GPS Milliseconds of week + nanoseconds of week + leap seconds
                 // Time since epoch = time of week + (week number * 7 * 24 * 3600)[week offset]
                 double timeofweek = gpsdata[0]/1000.0 + gpsdata[1]/1000000000.0 + (int)gpsdata[3];
-                int weeknumber = (int)gpsdata[2] + 2048; // 2 * 1024 = 2048 -> Two rollovers since Aug. 1999, another rollover in approx. 20 years
+                // 2 * 1024 = 2048 -> Two rollovers of 1024 weeks since Jan. 1980 (1999 and 2019), another rollover in approx. 20 years
+                int weeknumber = (int)gpsdata[2] + 2048; 
                 time_t utcepoch = (long)(timeofweek + (int)gpsdata[3] + (weeknumber*7*24*3600)); 
                 utcepoch += 315964800;  // Offset for GPS time, as it started in Jan. 6, 1980 (UTC is Jan 1, 1970)
 
