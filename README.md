@@ -99,7 +99,7 @@ If the daemon is installed using "sudo make install" as described above, the con
 * MODE: Selects server or client mode. Any other setting will result in a failed state.
 * MASTER_HOSTNAME: Parameter for client, indicates the hostname (in your /etc/hosts) for the computer running the server/master daemon. _Not used in server mode_.
 * PORT: Indicates the TCP port to be used. Change this to an available port on your device. Default is 12321, a random palindrome port.
-* TIMEOUT: In server mode, indicates the time the server will wait for a GPS reference time (GPST). In client mode, indicates the total time the client will attempt to connect with the server before exiting.
+* TIMEOUT: In server mode, indicates the time the server will wait for a GPS reference time (GPST). In client mode, indicates the total time the client will attempt to connect with the server before going to sleep for 10xTIMEOUT.
 
 ## Acknowledgements
 
