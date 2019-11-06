@@ -252,8 +252,13 @@ void timesync_client_daemon(){
     while(connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0){
         sleep(1);
         wait_cnt++;
-        if (wait_cnt > timeout)
-            exit_daemon(LOG_ERR, "Server connection timeout");
+        if (wait_cnt > timeout){
+            // If no connection was established, sleep for some time and try again
+            char errmsg[100]; sprintf(errmsg, "Server connection timeout, retrying in %ld seconds", timeout*10);
+            syslog(LOG_WARNING, "%s", errmsg);
+            wait_cnt = 0;
+            sleep(timeout*10);
+        }
     }
 
     // Request time from server
