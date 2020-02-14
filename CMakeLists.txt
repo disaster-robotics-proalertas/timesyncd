@@ -37,6 +37,9 @@ set (TIMESYNCD_CONF_DIR "/etc/timesyncd")
 # Directory with systemd unit files
 set (SYSTEMD_UNIT_DIR "/etc/systemd/system")
 
+# Directory for upstart (systemv) scripts
+set (SYSTEMV_UNIT_DIR "/etc/init.d")
+
 # Macro for installing configuration files
 function(install_conf src dest)
   if(NOT IS_ABSOLUTE "${src}")
@@ -68,3 +71,6 @@ install_conf (./timesyncd.conf ${TIMESYNCD_CONF_DIR})
 
 # Install systemd unit files 
 install_conf (./timesyncd.service ${SYSTEMD_UNIT_DIR})
+
+# Install systemv unit files 
+install_conf (./upstart/timesyncd ${SYSTEMV_UNIT_DIR})
