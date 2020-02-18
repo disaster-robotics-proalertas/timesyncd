@@ -23,7 +23,6 @@ case "$1" in
         echo -n "Restarting timesyncd."
         killall -TERM timesyncd
         /etc/timesyncd/timesyncd.sh &
-
         ;;
 *)
         echo "Usage: $0 { start | stop | restart }"

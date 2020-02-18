@@ -74,3 +74,4 @@ install_conf (./timesyncd.service ${SYSTEMD_UNIT_DIR})
 
 # Install systemv unit files 
 install_conf (./upstart/timesyncd ${SYSTEMV_UNIT_DIR})
+install_conf (./upstart/timesyncd.sh ${TIMESYNCD_CONF_DIR})
