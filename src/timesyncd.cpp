@@ -197,7 +197,7 @@ void timesync_server_daemon(){
     while(true){
         char buf[1024] = {0};
 
-        syslog (LOG_INFO, "Waiting for connection...");
+        syslog (LOG_DEBUG, "Waiting for connection...");
         int new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen);
         
         // Get IPv4 address of client
@@ -207,7 +207,7 @@ void timesync_server_daemon(){
         inet_ntop(AF_INET, &clientaddr, clientaddrstr, INET_ADDRSTRLEN);
         
         // Identify who requested the time by IPv4 address
-        syslog (LOG_INFO, "Request received from %s, sending current time", clientaddrstr);
+        syslog (LOG_DEBUG, "Request received from %s, sending current time", clientaddrstr);
         
         // Get current time (may be synchronized with GPS or not)
         time_t now = time(NULL);
@@ -248,7 +248,7 @@ void timesync_client_daemon(){
     // Try to request time to server every 1 second
     // Quit program if timeout
     int wait_cnt = 0;
-    syslog(LOG_INFO, "Will attempt to connect to server for %d seconds", timeout);
+    syslog(LOG_DEBUG, "Will attempt to connect to server for %d seconds", timeout);
     while(connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0){
         sleep(1);
         wait_cnt++;
@@ -262,7 +262,7 @@ void timesync_client_daemon(){
     }
 
     // Request time from server
-    syslog(LOG_INFO, "Connected, requesting time from server");
+    syslog(LOG_DEBUG, "Connected, requesting time from server");
 
     // Wait for an answer
     char buffer[1024] = {0};
@@ -283,7 +283,7 @@ void timesync_client_daemon(){
         exit_daemon(LOG_ERR, "Could not set system time");
     } else {        
         char logmsg[100]; sprintf(logmsg, "Setting system time to %ld UTC", server_time);
-        syslog(LOG_INFO, "%s", logmsg);
+        syslog(LOG_DEBUG, "%s", logmsg);
     }
 
     // Close socket
